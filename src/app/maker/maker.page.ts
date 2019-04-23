@@ -45,15 +45,18 @@ export class MakerPage implements OnInit {
    *
    * @param info.status - either 'accept' or 'decline'
    */
-  respondToApplication(info: {werkerId, shiftId, status}) {
+  async respondToApplication(info: {werkerId, shiftId, status}) {
     const { werkerId, shiftId, status } = info;
-    return from(this.loadingController.create())
-      .pipe(
-        flatMap(loading => loading.present()),
-        map(() => this.userService.respondToInvitation(shiftId, status, werkerId))
-      ).subscribe(() => {
-        this.loadingController.dismiss();
+    const loading = await this.loadingController.create();
+    loading.present();
+    return this.userService.respondToInvitation(shiftId, status, werkerId)
+    .subscribe(() => {
+        console.log('clicked');
+        loading.dismiss();
         this.applications = this.applications.filter(app => app.shiftId !== shiftId);
+      }, err => {
+        loading.dismiss();
+        console.error(err);
       });
   }
 
