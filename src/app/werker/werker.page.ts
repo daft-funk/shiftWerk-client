@@ -56,7 +56,7 @@ export class WerkerPage implements OnInit {
         this.userService.getShifts('history')
       ).subscribe(([available, upcoming, invited, history]) => {
           this.shifts = available;
-          this.upcomingShifts = upcoming;
+          this.upcomingShifts = upcoming.filter(shift => shift.positions.some(position => position.filled));
           this.invitedShifts = invited;
           this.pastShifts = history;
           loading.dismiss();

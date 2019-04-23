@@ -52,8 +52,16 @@ export class MakerSearchComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.userService.getWerkers(this.position.position).subscribe(werkers => this.werkers = werkers);
+  async ngOnInit() {
+    const loading = await this.loadingController.create();
+    loading.present();
+    this.userService.getWerkers(this.position.position).subscribe(werkers => {
+      loading.dismiss();
+      this.werkers = werkers;
+    }, (err) => {
+      loading.dismiss();
+      console.error(err);
+    });
   }
 
   text = () => {
